@@ -65,7 +65,7 @@ export default {
       }
     },
 
-        methods: {
+    methods: {
       storeMessage () {
         messagesRef.push({text: this.messageText, nickname: this.nickname})
         this.messageText = ''
@@ -93,7 +93,7 @@ export default {
         if (snapshot.val().nickname !== this.nickname) {
           nativeToast({
               message: `New message by ${snapshot.val().nickname}`,
-              type: 'success'
+              type: 'success',
           })
         }
       })

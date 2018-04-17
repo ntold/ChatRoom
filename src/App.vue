@@ -1,17 +1,18 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-dark bg-dark ">
-    <div class="container">
-      <p class="navbar-brand">Olek</p>
-    </div>
-  </nav>
-    <router-view/>
+    <Navbar />
+     <router-view/>
   </div>
 </template>
 
 <script>
+import Navbar from './components/Navbar';
+
 export default {
-  name: 'App'
+  name: 'App',
+  components:{
+    Navbar
+  }
 }
 </script>
 
