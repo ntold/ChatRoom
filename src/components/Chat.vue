@@ -12,7 +12,7 @@
       <!-- actions -->
       <div v-if="message !== editingMessage">
         <a v-on:click.prevent="deleteMessage(message)" v-if="nickname == message.nickname" href="#" class="card-link">delete</a>
-        <a v-on:click.prevent="editMessage(message)" v-on:keyup.left="editMessage(message)" v-if="nickname == message.nickname" href="#" class="card-link">edit</a>
+        <a v-on:click.prevent="editMessage(message)" v-if="nickname == message.nickname" href="#" class="card-link">edit</a>
       </div>
       <div v-else>
         <a v-on:click.prevent="cancelEditing" href="#" class="card-link">cancel</a>

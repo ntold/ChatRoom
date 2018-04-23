@@ -23,8 +23,6 @@ Vue.use(VueFire)
 
 Vue.config.productionTip = false
 
-var bus = new Vue()
-
 let app;
 firebase.auth().onAuthStateChanged(user => {
   if (!app) {
