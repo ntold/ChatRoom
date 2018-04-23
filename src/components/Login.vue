@@ -26,7 +26,6 @@
 <script>
 import Firebase from 'firebase'
 
-
 export default {
   name: 'login',
   data: function(){
@@ -46,7 +45,6 @@ export default {
               message: `You are logged in as ${user.email}`,
               type: 'success',
               position: 'top',
-              timeout: 5000,
             });
             this.$router.go({ path: '/' });
           },
@@ -57,10 +55,9 @@ export default {
               });
           }
         );
-
       e.preventDefault();
     }
-  }
+  },
 }
 
 </script>

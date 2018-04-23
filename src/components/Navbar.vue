@@ -2,9 +2,10 @@
   <nav>
       <div class="nav-wrapper #424242 grey darken-3">
           <div class="container">
-              <router-link to="/" class="brand-logo" style="text-decoration:none;">Olek</router-link>
+            <router-link to="/" class="brand-logo" style="text-decoration:none;"><i class="material-icons">chat</i> Olek</router-link>
               <ul class="right">
-                  <li v-if="isLoggedIn"><button v-on:click="logout" class="btn black">Logout</button></li>
+                <li v-if="isLoggedIn" class="nickname"> {{ currentUser }} </li>
+                <li v-if="isLoggedIn"><button v-on:click="logout" class="btn black">Logout</button></li>
               </ul>
           </div>
       </div>
@@ -24,7 +25,7 @@
     created() {
         if (firebase.auth().currentUser) {
         this.isLoggedIn = true;
-        this.currentUser = firebase.auth().currentUser.email;
+        this.currentUser = firebase.auth().currentUser.email;firebase.auth().currentUser.email;
         }
     },
     methods: {
@@ -40,6 +41,10 @@
     };
 </script>
 
-<style>
+<style scoped>
+
+.nickname{
+    margin-right: 20px;
+}
 
 </style>

@@ -11,8 +11,8 @@
       <textarea v-else v-model="messageText" class="form-control"></textarea>
       <!-- actions -->
       <div v-if="message !== editingMessage">
-        <a v-on:click.prevent="deleteMessage(message)" href="#" class="card-link">delete</a>
-        <a v-on:click.prevent="editMessage(message)" v-on:keyup.enter="editMessage(message)" href="#" class="card-link">edit</a>
+        <a v-on:click.prevent="deleteMessage(message)" v-if="nickname == message.nickname" href="#" class="card-link">delete</a>
+        <a v-on:click.prevent="editMessage(message)" v-on:keyup.left="editMessage(message)" v-if="nickname == message.nickname" href="#" class="card-link">edit</a>
       </div>
       <div v-else>
         <a v-on:click.prevent="cancelEditing" href="#" class="card-link">cancel</a>
@@ -28,10 +28,6 @@
       <h6>Message:</h6>
       <textarea v-model="messageText" class="form-control"></textarea>
     </div>
-    <div class="form-group">
-      <h6>Nickname:</h6>
-      <input v-model="nickname" class="form-control"/>
-    </div>
     <button class="btn btn-primary">Send</button>
   </form>
 </div>
@@ -39,6 +35,7 @@
 </template>
 <script>
 import Firebase from 'firebase'
+
 
 const config = {
     apiKey: "AIzaSyAvfSn6CXaYEVvm2gQ4qU3sNBaR3RSamvc",
@@ -60,7 +57,7 @@ export default {
       return{       
       messages: [],
       messageText: '',
-      nickname: 'ntold',
+      nickname: firebase.auth().currentUser.email,
       editingMessage: null
       }
     },
