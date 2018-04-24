@@ -6,7 +6,8 @@
     <div class="card-body">
       <!-- nickname -->
       <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block;" >{{ message.nickname }} </h6>
-      <h6 class="text-muted" style="display:inline-block; float: right;" >{{ message.time }}</h6>
+      <h6 class="text-muted" style="display:inline-block; float: right;"> {{ message.time }} </h6>
+      <i class="material-icons" v-if="message.isEdited == true" >mode_edit</i>
       <!-- content -->
       <p v-if="message !== editingMessage" class="card-text">{{ message.text }}</p>
       <textarea v-else v-model="messageText" class="form-control"></textarea>
@@ -61,17 +62,16 @@ export default {
       nickname: firebase.auth().currentUser.email,
       admin: 'admin@olek.com',
       time: '',
-      editingMessage: null
+      editingMessage: null,
+      isEdited: false,
       }
     },
 
     methods: {
-        storeMessage () {
+      storeMessage () {
         var d = new Date();
-        var n = d.getMinutes();
-        var h = d.getHours();
-        this.time = `${h}:${n}`
-        messagesRef.push({text: this.messageText, nickname: this.nickname, time: this.time})
+        this.time = ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2)
+        messagesRef.push({text: this.messageText, nickname: this.nickname, time: this.time, isEdited: this.isEdited})
         this.messageText = ''
       },
       deleteMessage (message) {
@@ -86,7 +86,10 @@ export default {
         this.messageText = ''
       },
       updateMessage () {
-        messagesRef.child(this.editingMessage.id).update({text: this.messageText})
+        var d = new Date();
+        this.time = ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2)
+        this.isEdited = true
+        messagesRef.child(this.editingMessage.id).update({text: this.messageText, isEdited: this.isEdited, time: this.time})
         this.cancelEditing()
       }
     },
@@ -126,7 +129,14 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
+.material-icons {
+  margin-top: 8px; 
+  margin-right: 5px; 
+  font-size: 18px; 
+  float: right;
+}
 
 </style>
 
