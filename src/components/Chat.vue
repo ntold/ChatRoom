@@ -5,13 +5,14 @@
   <div v-for="message in messages" v-bind:key="message.id" class="card mb-3">
     <div class="card-body">
       <!-- nickname -->
-      <h6 class="card-subtitle mb-2 text-muted">{{ message.nickname }}</h6>
+      <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block;" >{{ message.nickname }} </h6>
+      <h6 class="text-muted" style="display:inline-block; float: right;" >{{ message.time }}</h6>
       <!-- content -->
       <p v-if="message !== editingMessage" class="card-text">{{ message.text }}</p>
       <textarea v-else v-model="messageText" class="form-control"></textarea>
       <!-- actions -->
       <div v-if="message !== editingMessage">
-        <a v-on:click.prevent="deleteMessage(message)" v-if="nickname == message.nickname" href="#" class="card-link">delete</a>
+        <a v-on:click.prevent="deleteMessage(message)" v-if="nickname == message.nickname || nickname == admin" href="#" class="card-link">delete</a>
         <a v-on:click.prevent="editMessage(message)" v-if="nickname == message.nickname" href="#" class="card-link">edit</a>
       </div>
       <div v-else>
@@ -58,13 +59,19 @@ export default {
       messages: [],
       messageText: '',
       nickname: firebase.auth().currentUser.email,
+      admin: 'admin@olek.com',
+      time: '',
       editingMessage: null
       }
     },
 
     methods: {
-      storeMessage () {
-        messagesRef.push({text: this.messageText, nickname: this.nickname})
+        storeMessage () {
+        var d = new Date();
+        var n = d.getMinutes();
+        var h = d.getHours();
+        this.time = `${h}:${n}`
+        messagesRef.push({text: this.messageText, nickname: this.nickname, time: this.time})
         this.messageText = ''
       },
       deleteMessage (message) {
@@ -118,4 +125,8 @@ export default {
     }
 }
 </script>
+
+<style>
+
+</style>
 
