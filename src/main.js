@@ -6,7 +6,6 @@ import router from './router'
 import VueFire from 'vuefire'
 import firebase from 'firebase';
 
-
 const config = {
   apiKey: "AIzaSyAvfSn6CXaYEVvm2gQ4qU3sNBaR3RSamvc",
   authDomain: "vue-chat-room-7339b.firebaseapp.com",

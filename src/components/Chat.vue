@@ -57,13 +57,13 @@ export default {
     name: 'chat',
     data() {
       return{       
-      messages: [],
-      messageText: '',
-      nickname: firebase.auth().currentUser.email,
-      admin: 'admin@olek.com',
-      time: '',
-      editingMessage: null,
-      isEdited: false,
+        messages: [],
+        messageText: '',
+        nickname: firebase.auth().currentUser.email,
+        admin: 'admin@olek.com',
+        time: '',
+        editingMessage: null,
+        isEdited: false,
       }
     },
 
