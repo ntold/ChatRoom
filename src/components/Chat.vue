@@ -2,26 +2,28 @@
   <div id="chat" class="container">
   <hr />
   <!-- Messages -->
-  <div v-for="message in messages" v-bind:key="message.id" class="card mb-3">
-    <div class="card-body">
-      <!-- nickname -->
-      <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block;" >{{ message.nickname }} </h6>
-      <h6 class="text-muted" style="display:inline-block; float: right;"> {{ message.time }} </h6>
-      <i class="material-icons" v-if="message.isEdited == true" >mode_edit</i>
-      <!-- content -->
-      <p v-if="message !== editingMessage" class="card-text">{{ message.text }}</p>
-      <textarea v-else v-model="messageText" class="form-control"></textarea>
-      <!-- actions -->
-      <div v-if="message !== editingMessage">
-        <a v-on:click.prevent="deleteMessage(message)" v-if="nickname == message.nickname || nickname == admin" href="#" class="card-link">delete</a>
-        <a v-on:click.prevent="editMessage(message)" v-if="nickname == message.nickname" href="#" class="card-link">edit</a>
-      </div>
-      <div v-else>
-        <a v-on:click.prevent="cancelEditing" href="#" class="card-link">cancel</a>
-        <a v-on:click.prevent="updateMessage" v-on:keyup.enter="updateMessage" href="#" class="card-link">update</a>
+   <transition-group name="list" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+    <div v-for="message in messages" v-bind:key="message.id" class="card mb-3">
+      <div class="card-body">
+        <!-- nickname -->
+        <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block;" >{{ message.nickname }} </h6>
+        <h6 class="text-muted" style="display:inline-block; float: right;"> {{ message.time }} </h6>
+        <i class="material-icons" v-if="message.isEdited == true" >mode_edit</i>
+        <!-- content -->
+        <p v-if="message !== editingMessage" class="card-text">{{ message.text }}</p>
+        <textarea v-else v-model="messageText" class="form-control"></textarea>
+        <!-- actions -->
+        <div v-if="message !== editingMessage">
+          <a v-on:click.prevent="deleteMessage(message)" v-if="nickname == message.nickname || nickname == admin" href="#" class="card-link">delete</a>
+          <a v-on:click.prevent="editMessage(message)" v-if="nickname == message.nickname" href="#" class="card-link">edit</a>
+        </div>
+        <div v-else>
+          <a v-on:click.prevent="cancelEditing" href="#" class="card-link">cancel</a>
+          <a v-on:click.prevent="updateMessage" v-on:keyup.enter="updateMessage" href="#" class="card-link">update</a>
+        </div>
       </div>
     </div>
-  </div>
+  </transition-group> 
 
   <hr>
   <!-- New Message -->
@@ -36,6 +38,7 @@
 
 </template>
 <script>
+
 import Firebase from 'firebase'
 
 
@@ -68,9 +71,14 @@ export default {
     },
 
     methods: {
-      storeMessage () {
+      getTime () {
         var d = new Date();
         this.time = ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2)
+
+        return this.time
+      },
+      storeMessage () {
+        this.getTime()
         messagesRef.push({text: this.messageText, nickname: this.nickname, time: this.time, isEdited: this.isEdited})
         this.messageText = ''
       },
@@ -86,10 +94,10 @@ export default {
         this.messageText = ''
       },
       updateMessage () {
-        var d = new Date();
-        this.time = ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2)
+        this.getTime()
         this.isEdited = true
         messagesRef.child(this.editingMessage.id).update({text: this.messageText, isEdited: this.isEdited, time: this.time})
+        this.editingMessage = false
         this.cancelEditing()
       }
     },
@@ -130,6 +138,8 @@ export default {
 </script>
 
 <style scoped>
+/* Import CSS Animatioans */
+@import "https://cdn.jsdelivr.net/npm/animate.css@3.5.1";
 
 .material-icons {
   margin-top: 8px; 
@@ -137,6 +147,7 @@ export default {
   font-size: 18px; 
   float: right;
 }
+
 
 </style>
 
