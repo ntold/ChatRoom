@@ -31,11 +31,11 @@ export default {
   data: function(){
     return{ 
       email: '',
-      password: '',     
+      password: '',
     };
   },
   methods:{
-    login: function(e){
+    login (e){
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
@@ -58,6 +58,15 @@ export default {
       e.preventDefault();
     }
   },
+  created () {
+      firebase.auth().onAuthStateChanged(firebaseUser => {
+          if(!firebaseUser){
+            this.loggedIn = false
+            console.log(this.loggedIn)
+          }
+      })
+
+  }
 }
 
 </script>

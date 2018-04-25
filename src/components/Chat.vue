@@ -59,6 +59,9 @@ const config = {
 
   const database = firebase.database()
   const messagesRef = database.ref('messages')
+  const loggedRef = database.ref('loggedIn')
+
+
 
 
 export default {
@@ -72,6 +75,7 @@ export default {
         time: '',
         editingMessage: null,
         isEdited: false,
+        loggedIn: false
       }
     },
 
@@ -105,6 +109,7 @@ export default {
         this.editingMessage = false
         this.cancelEditing()
       },
+      // TODO
       workInProgress () {
         nativeToast({
               message: `Work in progress!`,
@@ -144,6 +149,13 @@ export default {
               message: `Message edited by ${snapshot.val().nickname}`,
               type: 'info'
           })
+        }
+      })
+      //Checks if user is Online
+      firebase.auth().onAuthStateChanged(firebaseUser => {
+        if(firebaseUser){
+          this.loggedIn = true
+          console.log(this.loggedIn)
         }
       })
     }

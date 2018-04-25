@@ -14,6 +14,7 @@
 
 <script>
     import firebase from 'firebase';
+
     export default {
     name: 'navbar',
     data() {
@@ -30,12 +31,12 @@
     },
     methods: {
         logout: function() {
-        firebase
-            .auth()
-            .signOut()
-            .then(() => {
-            this.$router.go({ path: this.$router.path });
-            });
+            firebase
+                .auth()
+                .signOut()
+                .then(() => {
+                this.$router.go({ path: this.$router.path });
+                });        
         }
     }
     };
