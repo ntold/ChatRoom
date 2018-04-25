@@ -24,6 +24,11 @@
       </div>
     </div>
   </transition-group> 
+  <div class="fixed-action-btn">
+    <a v-on:click.prevent="workInProgress" to="/newChat" class="btn-floating btn-large orange darken-4"> 
+      <i class ="fa fa-plus"></i>
+    </a>
+  </div>
 
   <hr>
   <!-- New Message -->
@@ -32,7 +37,7 @@
       <h6>Message:</h6>
       <textarea v-model="messageText" class="form-control"></textarea>
     </div>
-    <button class="btn btn-primary">Send</button>
+    <button class="btn btn-primary mb-3">Send</button>
   </form>
 </div>
 
@@ -99,6 +104,14 @@ export default {
         messagesRef.child(this.editingMessage.id).update({text: this.messageText, isEdited: this.isEdited, time: this.time})
         this.editingMessage = false
         this.cancelEditing()
+      },
+      workInProgress () {
+        nativeToast({
+              message: `Work in progress!`,
+              type: 'info',
+              position: 'top',
+              timeout: 4000
+          })
       }
     },
 
@@ -147,7 +160,6 @@ export default {
   font-size: 18px; 
   float: right;
 }
-
 
 </style>
 

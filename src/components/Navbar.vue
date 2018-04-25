@@ -2,10 +2,10 @@
   <nav>
       <div class="nav-wrapper #424242 grey darken-3">
           <div class="container">
-            <router-link to="/" class="brand-logo" style="text-decoration:none;"><i class="material-icons">chat</i> Olek</router-link>
+            <router-link to="/" class="brand-logo animated bounceInLeft"  style="text-decoration:none;"><i class="material-icons">chat</i> Olek</router-link>
               <ul class="right">
                 <li v-if="isLoggedIn" class="nickname"> {{ currentUser }} </li>
-                <li v-if="isLoggedIn"><button v-on:click="logout" class="btn black">Logout</button></li>
+                <li v-if="isLoggedIn"><button v-on:click="logout" class="btn orange darken-4">Logout</button></li>
               </ul>
           </div>
       </div>
