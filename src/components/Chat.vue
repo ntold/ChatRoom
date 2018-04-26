@@ -5,7 +5,7 @@
    <transition-group name="list" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
     <div v-for="message in messages" v-bind:key="message.id" class="card mb-3">
       <div class="card-body">
-        <!-- nickname -->
+        <!-- nickname  and time -->
         <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block;" >{{ message.nickname }} </h6>
         <h6 class="text-muted" style="display:inline-block; float: right;"> {{ message.time }} </h6>
         <i class="material-icons" v-if="message.isEdited == true" >mode_edit</i>
@@ -107,6 +107,7 @@ export default {
         this.isEdited = true
         messagesRef.child(this.editingMessage.id).update({text: this.messageText, isEdited: this.isEdited, time: this.time})
         this.editingMessage = false
+        this.isEdited = false
         this.cancelEditing()
       },
       // TODO
@@ -144,6 +145,8 @@ export default {
       messagesRef.on('child_changed', snapshot => {
         const updatedMessage = this.messages.find(message => message.id === snapshot.key)
         updatedMessage.text = snapshot.val().text
+        const updatedIsEdited = this.messages.find(message => message.id === snapshot.key)
+        updatedIsEdited.isEdited = snapshot.val().isEdited
         if (snapshot.val().nickname !== this.nickname) {
           nativeToast({
               message: `Message edited by ${snapshot.val().nickname}`,

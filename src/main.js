@@ -3,7 +3,6 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import VueFire from 'vuefire'
 import firebase from 'firebase';
 
 const config = {
@@ -16,9 +15,6 @@ const config = {
 }
 
 firebase.initializeApp(config);
-
-
-Vue.use(VueFire)
 
 Vue.config.productionTip = false
 
