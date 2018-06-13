@@ -43,126 +43,139 @@
 
 </template>
 <script>
-
-import Firebase from 'firebase'
-
+import Firebase from "firebase";
 
 const config = {
-    apiKey: "AIzaSyAvfSn6CXaYEVvm2gQ4qU3sNBaR3RSamvc",
-    authDomain: "vue-chat-room-7339b.firebaseapp.com",
-    databaseURL: "https://vue-chat-room-7339b.firebaseio.com",
-    projectId: "vue-chat-room-7339b",
-    storageBucket: "vue-chat-room-7339b.appspot.com",
-    messagingSenderId: "97116648802"
-}
-  firebase.initializeApp(config);
+  apiKey: "AIzaSyAvfSn6CXaYEVvm2gQ4qU3sNBaR3RSamvc",
+  authDomain: "vue-chat-room-7339b.firebaseapp.com",
+  databaseURL: "https://vue-chat-room-7339b.firebaseio.com",
+  projectId: "vue-chat-room-7339b",
+  storageBucket: "vue-chat-room-7339b.appspot.com",
+  messagingSenderId: "97116648802"
+};
+firebase.initializeApp(config);
 
-  const database = firebase.database()
-  const messagesRef = database.ref('messages')
-  const loggedRef = database.ref('loggedIn')
-
-
-
+const database = firebase.database();
+const messagesRef = database.ref("messages");
+const loggedRef = database.ref("loggedIn");
 
 export default {
-    name: 'chat',
-    data() {
-      return{       
-        messages: [],
-        messageText: '',
-        nickname: firebase.auth().currentUser.email,
-        admin: 'admin@olek.com',
-        time: '',
-        editingMessage: null,
-        isEdited: false,
-        loggedIn: false
-      }
+  name: "chat",
+  data() {
+    return {
+      messages: [],
+      messageText: "",
+      nickname: firebase.auth().currentUser.email,
+      admin: "admin@olek.com",
+      time: "",
+      editingMessage: null,
+      isEdited: false,
+      loggedIn: false
+    };
+  },
+
+  methods: {
+    getTime() {
+      var d = new Date();
+      this.time =
+        ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+
+      return this.time;
     },
-
-    methods: {
-      getTime () {
-        var d = new Date();
-        this.time = ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2)
-
-        return this.time
-      },
-      storeMessage () {
-        this.getTime()
-        messagesRef.push({text: this.messageText, nickname: this.nickname, time: this.time, isEdited: this.isEdited})
-        this.messageText = ''
-      },
-      deleteMessage (message) {
-        messagesRef.child(message.id).remove()
-      },
-      editMessage (message) {
-        this.editingMessage = message;
-        this.messageText = message.text
-      },
-      cancelEditing () {
-        this.editingMessage = null
-        this.messageText = ''
-      },
-      updateMessage () {
-        this.getTime()
-        this.isEdited = true
-        messagesRef.child(this.editingMessage.id).update({text: this.messageText, isEdited: this.isEdited, time: this.time})
-        this.editingMessage = false
-        this.isEdited = false
-        this.cancelEditing()
-      },
-      // TODO
-      workInProgress () {
-        nativeToast({
-              message: `Work in progress!`,
-              type: 'info',
-              position: 'top',
-              timeout: 4000
-          })
-      }
+    storeMessage() {
+      this.getTime();
+      messagesRef.push({
+        text: this.messageText,
+        nickname: this.nickname,
+        time: this.time,
+        isEdited: this.isEdited
+      });
+      this.messageText = "";
     },
-
-    created () {
-      messagesRef.on('child_added', snapshot => {
-        this.messages.push({...snapshot.val(), id: snapshot.key})
-        if (snapshot.val().nickname !== this.nickname) {
-          nativeToast({
-              message: `New message by ${snapshot.val().nickname}`,
-              type: 'success',
-          })
-        }
-      })
-      messagesRef.on('child_removed', snapshot => {
-        const deletedMessage = this.messages.find(message => message.id === snapshot.key)
-        const index = this.messages.indexOf(deletedMessage)
-        this.messages.splice(index, 1)
-        if (snapshot.val().nickname !== this.nickname) {
-          nativeToast({
-              message: `Message deleted by ${snapshot.val().nickname}`,
-              type: 'warning'
-          })
-        }
-      })
-      messagesRef.on('child_changed', snapshot => {
-        const updatedMessage = this.messages.find(message => message.id === snapshot.key)
-        updatedMessage.text = snapshot.val().text
-        const updatedIsEdited = this.messages.find(message => message.id === snapshot.key)
-        updatedIsEdited.isEdited = snapshot.val().isEdited
-        if (snapshot.val().nickname !== this.nickname) {
-          nativeToast({
-              message: `Message edited by ${snapshot.val().nickname}`,
-              type: 'info'
-          })
-        }
-      })
-      //Checks if user is Online
-      firebase.auth().onAuthStateChanged(firebaseUser => {
-        if(firebaseUser){
-          this.loggedIn = true
-          console.log(this.loggedIn)
-        }
-      })
+    deleteMessage(message) {
+      messagesRef.child(message.id).remove();
+    },
+    editMessage(message) {
+      this.editingMessage = message;
+      this.messageText = message.text;
+    },
+    cancelEditing() {
+      this.editingMessage = null;
+      this.messageText = "";
+    },
+    updateMessage() {
+      this.getTime();
+      this.isEdited = true;
+      messagesRef
+        .child(this.editingMessage.id)
+        .update({
+          text: this.messageText,
+          isEdited: this.isEdited,
+          time: this.time
+        });
+      this.editingMessage = false;
+      this.isEdited = false;
+      this.cancelEditing();
+    },
+    // TODO
+    workInProgress() {
+      nativeToast({
+        message: `Work in progress!`,
+        type: "info",
+        position: "top",
+        timeout: 4000
+      });
     }
-}
+  },
+
+  created() {
+    messagesRef.on("child_added", snapshot => {
+      this.messages.push({ ...snapshot.val(), id: snapshot.key });
+      if (snapshot.val().nickname !== this.nickname) {
+        nativeToast({
+          message: `New message by ${snapshot.val().nickname}`,
+          type: "success"
+        });
+      }
+    });
+    messagesRef.on("child_removed", snapshot => {
+      const deletedMessage = this.messages.find(
+        message => message.id === snapshot.key
+      );
+      const index = this.messages.indexOf(deletedMessage);
+      this.messages.splice(index, 1);
+      if (snapshot.val().nickname !== this.nickname) {
+        nativeToast({
+          message: `Message deleted by ${snapshot.val().nickname}`,
+          type: "warning"
+        });
+      }
+    });
+    messagesRef.on("child_changed", snapshot => {
+      const updatedMessage = this.messages.find(
+        message => message.id === snapshot.key
+      );
+      updatedMessage.text = snapshot.val().text;
+      const updatedIsEdited = this.messages.find(
+        message => message.id === snapshot.key
+      );
+      updatedIsEdited.isEdited = snapshot.val().isEdited;
+      if (snapshot.val().nickname !== this.nickname) {
+        nativeToast({
+          message: `Message edited by ${snapshot.val().nickname}`,
+          type: "info"
+        });
+      }
+    });
+    //Checks if user is Online
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+      if (firebaseUser) {
+        this.loggedIn = true;
+        console.log(this.loggedIn);
+      }
+    });
+  }
+};
 </script>
 
 <style scoped>
@@ -170,11 +183,10 @@ export default {
 @import "https://cdn.jsdelivr.net/npm/animate.css@3.5.1";
 
 .material-icons {
-  margin-top: 8px; 
-  margin-right: 5px; 
-  font-size: 18px; 
+  margin-top: 8px;
+  margin-right: 5px;
+  font-size: 18px;
   float: right;
 }
-
 </style>
 
