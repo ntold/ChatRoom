@@ -1,48 +1,75 @@
 <template>
   <div id="chat" class="container">
-  <hr />
-  <!-- Messages -->
-   <transition-group name="list" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-    <div v-for="message in messages" v-bind:key="message.id" class="card mb-3">
-      <div class="card-body">
-        <!-- nickname  and time -->
-        <h6 class="card-subtitle mb-2 text-muted" style="display:inline-block;" >{{ message.nickname }} </h6>
-        <h6 class="text-muted" style="display:inline-block; float: right;"> {{ message.time }} </h6>
-        <i class="material-icons" v-if="message.isEdited == true" >mode_edit</i>
-        <!-- content -->
-        <p v-if="message !== editingMessage" class="card-text">{{ message.text }}</p>
-        <textarea v-else v-model="messageText" class="form-control"></textarea>
-        <!-- actions -->
-        <div v-if="message !== editingMessage">
-          <a v-on:click.prevent="deleteMessage(message)" v-if="nickname == message.nickname || nickname == admin" href="#" class="card-link">delete</a>
-          <a v-on:click.prevent="editMessage(message)" v-if="nickname == message.nickname" href="#" class="card-link">edit</a>
-        </div>
-        <div v-else>
-          <a v-on:click.prevent="cancelEditing" href="#" class="card-link">cancel</a>
-          <a v-on:click.prevent="updateMessage" v-on:keyup.enter="updateMessage" href="#" class="card-link">update</a>
+    <hr>
+    <!-- Messages -->
+    <transition-group
+      name="list"
+      enter-active-class="animated fadeIn"
+      leave-active-class="animated fadeOut"
+    >
+      <div v-for="message in messages" v-bind:key="message.id" class="card mb-3" v-chat-scroll>
+        <div class="card-body">
+          <!-- nickname  and time -->
+          <h6
+            class="card-subtitle mb-2 text-muted"
+            style="display:inline-block;"
+          >{{ message.nickname }}</h6>
+          <h6 class="text-muted" style="display:inline-block; float: right;">{{ message.time }}</h6>
+          <i class="material-icons" v-if="message.isEdited == true">mode_edit</i>
+          <!-- content -->
+          <p v-if="message !== editingMessage" class="card-text">{{ message.text }}</p>
+          <textarea v-else v-model="messageText" class="form-control"></textarea>
+          <!-- actions -->
+          <div v-if="message !== editingMessage">
+            <a
+              v-on:click.prevent="deleteMessage(message)"
+              v-if="nickname == message.nickname || nickname == admin"
+              href="#"
+              class="card-link"
+            >delete</a>
+            <a
+              v-on:click.prevent="editMessage(message)"
+              v-if="nickname == message.nickname"
+              href="#"
+              class="card-link"
+            >edit</a>
+          </div>
+          <div v-else>
+            <a v-on:click.prevent="cancelEditing" href="#" class="card-link">cancel</a>
+            <a
+              v-on:click.prevent="updateMessage"
+              v-on:keyup.enter="updateMessage"
+              href="#"
+              class="card-link"
+            >update</a>
+          </div>
         </div>
       </div>
+    </transition-group>
+    <div class="fixed-action-btn">
+      <a
+        v-on:click.prevent="workInProgress"
+        to="/newChat"
+        class="btn-floating btn-large orange darken-4"
+      >
+        <i class="fa fa-plus"></i>
+      </a>
     </div>
-  </transition-group> 
-  <div class="fixed-action-btn">
-    <a v-on:click.prevent="workInProgress" to="/newChat" class="btn-floating btn-large orange darken-4"> 
-      <i class ="fa fa-plus"></i>
-    </a>
+
+    <hr>
+    <!-- New Message -->
+    <form v-if="!editingMessage" v-on:submit.prevent="storeMessage" v-on:keyup.enter="storeMessage">
+      <div class="form-group">
+        <h6>Message:</h6>
+        <textarea v-model="messageText" class="form-control"></textarea>
+      </div>
+      <button class="btn btn-primary mb-3">Send</button>
+    </form>
   </div>
-
-  <hr>
-  <!-- New Message -->
-  <form v-if="!editingMessage" v-on:submit.prevent="storeMessage" v-on:keyup.enter="storeMessage">
-    <div class="form-group">
-      <h6>Message:</h6>
-      <textarea v-model="messageText" class="form-control"></textarea>
-    </div>
-    <button class="btn btn-primary mb-3">Send</button>
-  </form>
-</div>
-
 </template>
 <script>
+import VueChatScroll from "vue-chat-scroll";
+Vue.use(VueChatScroll);
 import Firebase from "firebase";
 
 const config = {
@@ -106,13 +133,11 @@ export default {
     updateMessage() {
       this.getTime();
       this.isEdited = true;
-      messagesRef
-        .child(this.editingMessage.id)
-        .update({
-          text: this.messageText,
-          isEdited: this.isEdited,
-          time: this.time
-        });
+      messagesRef.child(this.editingMessage.id).update({
+        text: this.messageText,
+        isEdited: this.isEdited,
+        time: this.time
+      });
       this.editingMessage = false;
       this.isEdited = false;
       this.cancelEditing();
